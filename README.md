@@ -5,7 +5,7 @@ including code practice and theory notes.
 
 ---
 
-## Train Test Split
+## 01-Train Test Split
 
 ### What is Train-Test Split?
 
@@ -124,3 +124,146 @@ b → intercept (starting point of the line)
 - Adding them pushed R² from 0.57 → 0.91
 - Choosing the right features matters more than the algorithm itself
 - True/False columns must be encoded to 1/0 before using in a model
+
+### 03-Logistic Regression
+
+## What is Logistic Regression?
+
+Logistic Regression is a classification algorithm that predicts the probability of an outcome being **yes or no (1 or 0)**. Unlike Linear Regression which predicts a number, Logistic Regression predicts a **class**.
+
+---
+
+## Types of Logistic Regression
+
+| Type        | When to Use             | Example             |
+| ----------- | ----------------------- | ------------------- |
+| Binary      | Only 2 outcomes         | Pass / Fail         |
+| Multinomial | 3+ outcomes, no order   | Cat / Dog / Bird    |
+| Ordinal     | 3+ outcomes, with order | Low / Medium / High |
+
+> We focused on **Binary Logistic Regression** in this session.
+
+---
+
+## How It Works
+
+- Takes input features and predicts a **probability between 0 and 1**
+- If probability >= 0.5 → Class 1 (Yes)
+- If probability < 0.5 → Class 0 (No)
+
+```
+0.0  ←————————————————→  1.0
+NO                        YES
+(0%)                    (100%)
+```
+
+---
+
+## Difference — Linear vs Logistic Regression
+
+|             | Linear Regression     | Logistic Regression       |
+| ----------- | --------------------- | ------------------------- |
+| Output      | A number (e.g. 270kg) | A probability (e.g. 0.85) |
+| Used for    | Regression            | Classification            |
+| Example     | Predict crop yield    | Predict pass/fail         |
+| Result type | Continuous            | 0 or 1                    |
+
+---
+
+## Confusion Matrix
+
+A confusion matrix shows exactly where the model was right and where it was wrong.
+
+```
+                 Predicted NO    Predicted YES
+Actual NO    →       TN               FP
+Actual YES   →       FN               TP
+```
+
+| Term | Full Name      | Meaning                       |
+| ---- | -------------- | ----------------------------- |
+| TN   | True Negative  | Correctly predicted No        |
+| TP   | True Positive  | Correctly predicted Yes       |
+| FP   | False Positive | Predicted Yes but actually No |
+| FN   | False Negative | Predicted No but actually Yes |
+
+---
+
+## Projects Built
+
+### Project 1 — Student Pass/Fail Predictor
+
+**File:** `logistics.py`
+
+| Detail           | Info                        |
+| ---------------- | --------------------------- |
+| Dataset          | Manually created            |
+| Rows             | 10                          |
+| Features         | study_hours, previous_marks |
+| Target           | passed (1 = Pass, 0 = Fail) |
+| Train/Test Split | No — dataset too small      |
+| Accuracy         | 100%                        |
+
+**Confusion Matrix Result:**
+
+```
+[[4 0]
+ [0 6]]
+```
+
+Model predicted all 10 students correctly.
+
+**New Student Prediction:**
+
+- study_hours = 4, previous_marks = 58 → **Predicted: PASS**
+
+---
+
+### Project 2 — Heart Disease Predictor
+
+**File:** `heart_prediction.py`  
+**Dataset:** Heart Disease Dataset — [Kaggle Link](https://www.kaggle.com/datasets/johnsmith88/heart-disease-dataset)
+
+| Detail           | Info                                 |
+| ---------------- | ------------------------------------ |
+| Rows             | 1025                                 |
+| Columns          | 14                                   |
+| Missing Values   | None                                 |
+| Target           | target (1 = Disease, 0 = No Disease) |
+| Train/Test Split | 80% train / 20% test                 |
+| random_state     | 42                                   |
+| Accuracy         | 79.5%                                |
+
+**Features Used:**
+age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal
+
+**Confusion Matrix Result:**
+
+```
+                 Predicted NO    Predicted YES
+Actual NO    →      73               29
+Actual YES   →      13               90
+```
+
+- 73 patients correctly predicted as healthy
+- 90 patients correctly predicted as having heart disease
+- 29 false alarms
+- 13 missed cases
+
+---
+
+## Key Learnings
+
+- Logistic Regression predicts **class (0 or 1)**, not a number
+- Always use train-test split when dataset has **100+ rows**
+- Use `max_iter=1000` to avoid ConvergenceWarning on large datasets
+- Use `df.drop("target", axis=1)` to select all features cleanly
+- Accuracy alone is not enough — always check the **confusion matrix**
+
+---
+
+## What Comes Next
+
+- Decision Tree
+- Random Forest
+- Model Deployment with Streamlit
