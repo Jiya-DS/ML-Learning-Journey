@@ -127,7 +127,7 @@ b → intercept (starting point of the line)
 
 ## Visualization
 
-![Actual vs Predicted](visuals/Actual_vs_predicted.png)
+![Actual vs Predicted](Linear-Regression/Actual_vs_predicted.png)
 
 ### 03-Logistic Regression
 
@@ -322,7 +322,7 @@ It selects the best split at each step by minimizing **Gini Impurity**.
 
 ## Visualization
 
-![Decision Tree](visuals/decision_tree.png)
+![Decision Tree](Decision_tree/visual/decision_tree.png)
 
 # 05-Random Forest — Heart Disease Predictor
 
@@ -386,4 +386,4 @@ This group of trees is called an **ensemble.**
 
 ## Feature Importance Chart
 
-![Random Forest](visuals/random_forest.png)
+![Random Forest](Random_forest/visuals/random_forest.png)
