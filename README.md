@@ -315,3 +315,63 @@ It selects the best split at each step by minimizing **Gini Impurity**.
 | ------------------- | -------- |
 | Logistic Regression | 79.5%    |
 | Decision Tree       | 80.0%    |
+
+# 05-Random Forest — Heart Disease Predictor
+
+## Concept
+
+Random Forest is a supervised ML algorithm that builds many Decision Trees
+and combines their predictions through majority voting.
+This group of trees is called an **ensemble.**
+
+## How It Works
+
+1. Build many Decision Trees (n_estimators=100 means 100 trees)
+2. Each tree gets a different random sample of data (Bagging)
+3. Each tree sees a random subset of features (Random Feature Selection)
+4. All trees vote → majority vote = final prediction
+
+## Two Special Tricks
+
+- **Bagging** — each tree trains on a different random sample of data
+- **Random Feature Selection** — each tree sees a random subset of features
+- Both tricks make trees diverse and reduce overfitting
+
+## Dataset
+
+- Source: Kaggle Heart Disease Dataset
+- Rows: 1025, Columns: 14
+- Target: 1 = Disease, 0 = No Disease
+
+## Model Results
+
+- Algorithm: RandomForestClassifier (n_estimators=100)
+- Accuracy: 98.5%
+
+## Confusion Matrix
+
+|                   | Predicted No Disease | Predicted Disease |
+| ----------------- | -------------------- | ----------------- |
+| Actual No Disease | 102                  | 0                 |
+| Actual Disease    | 3                    | 100               |
+
+## Feature Importance (Top 3)
+
+1. cp — chest pain type (most dominant feature)
+2. ca — number of major vessels
+3. thalach — maximum heart rate achieved
+
+## Comparison
+
+| Model               | Accuracy |
+| ------------------- | -------- |
+| Logistic Regression | 79.5%    |
+| Decision Tree       | 80.0%    |
+| Random Forest       | 98.5%    |
+
+## Key Observation
+
+- Random Forest improved accuracy by 18.5% over Decision Tree
+- Missed only 3 actual disease cases vs 10 in Decision Tree
+- Random Forest corroborates that chest pain (cp) is the
+  most important feature for heart disease prediction
