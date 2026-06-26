@@ -267,3 +267,51 @@ Actual YES   →      13               90
 - Decision Tree
 - Random Forest
 - Model Deployment with Streamlit
+
+# 04-Decision Tree — Heart Disease Predictor
+
+## Concept
+
+A Decision Tree is a supervised ML algorithm that splits data by asking
+a series of questions until it reaches a final prediction.
+It selects the best split at each step by minimizing **Gini Impurity**.
+
+## Key Terms
+
+- **Root Node** — First question at the top of the tree
+- **Branch** — Path taken after a condition is met
+- **Leaf Node** — Final prediction, no more splits
+- **Gini Impurity** — Measures how mixed a node is (0 = pure, 0.5 = mixed)
+- **Pruning** — Limiting tree depth to prevent overfitting
+- **max_depth** — Parameter used to control tree size
+
+## Dataset
+
+- Source: Kaggle Heart Disease Dataset
+- Rows: 1025, Columns: 14
+- Target: 1 = Disease, 0 = No Disease
+
+## Model Results
+
+- Algorithm: DecisionTreeClassifier (max_depth=4)
+- Accuracy: 80%
+
+## Confusion Matrix
+
+|                   | Predicted No Disease | Predicted Disease |
+| ----------------- | -------------------- | ----------------- |
+| Actual No Disease | 71                   | 31                |
+| Actual Disease    | 10                   | 93                |
+
+## Key Observation
+
+- Chest pain type (cp) was the dominant feature — used as root node
+- 10 actual disease cases were missed (False Negatives)
+- In medical predictions, Recall matters as much as Accuracy
+
+## Comparison
+
+| Model               | Accuracy |
+| ------------------- | -------- |
+| Logistic Regression | 79.5%    |
+| Decision Tree       | 80.0%    |
