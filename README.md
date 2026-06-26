@@ -125,6 +125,10 @@ b → intercept (starting point of the line)
 - Choosing the right features matters more than the algorithm itself
 - True/False columns must be encoded to 1/0 before using in a model
 
+## Visualization
+
+![Actual vs Predicted](visuals/Actual_vs_predicted.png)
+
 ### 03-Logistic Regression
 
 ## What is Logistic Regression?
@@ -316,6 +320,10 @@ It selects the best split at each step by minimizing **Gini Impurity**.
 | Logistic Regression | 79.5%    |
 | Decision Tree       | 80.0%    |
 
+## Visualization
+
+![Decision Tree](visuals/decision_tree.png)
+
 # 05-Random Forest — Heart Disease Predictor
 
 ## Concept
@@ -375,3 +383,7 @@ This group of trees is called an **ensemble.**
 - Missed only 3 actual disease cases vs 10 in Decision Tree
 - Random Forest corroborates that chest pain (cp) is the
   most important feature for heart disease prediction
+
+## Feature Importance Chart
+
+![Random Forest](visuals/random_forest.png)
