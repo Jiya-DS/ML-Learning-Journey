@@ -387,3 +387,72 @@ This group of trees is called an **ensemble.**
 ## Feature Importance Chart
 
 ![Random Forest](Random_forest/visuals/random_forest.png)
+
+# 06-KNN - Crop Yield Prediction
+
+## 📌 Objective
+
+Predict crop yield (tons per hectare) based on environmental and agricultural features using the K-Nearest Neighbors algorithm.
+
+## 📂 Dataset
+
+- **Source:** Crop Yield Dataset (Kaggle)
+- **Total Rows:** 1,000,000 (sampled 10,000 for KNN efficiency)
+- **Features:** Region, Soil Type, Crop, Rainfall, Temperature, Fertilizer Used, Irrigation Used, Weather Condition, Days to Harvest
+- **Target:** Yield_tons_per_hectare
+
+## ⚙️ Preprocessing
+
+- Label Encoding for categorical columns (Region, Soil_Type, Crop, Weather_Condition)
+- Boolean columns converted to integers
+- StandardScaler applied (essential for KNN distance calculation)
+
+## 🤖 Model
+
+- **Algorithm:** KNeighborsRegressor
+- **Best K:** 15 (found by testing K=1 to K=20)
+
+## 📊 Results
+
+| Metric | Score  |
+| ------ | ------ |
+| MAE    | 0.4839 |
+| RMSE   | 0.6060 |
+| R²     | 0.8727 |
+
+## 📈 Visuals
+
+- `KNN/visuals/best_k_value.png` — RMSE vs K value graph
+- `KNN/visuals/actual_vs_predicted.png` — Actual vs Predicted yield scatter plot
+
+## 💡 Key Learnings
+
+### 1. How KNN Works
+
+KNN does not learn any pattern during training — it simply memorizes the entire dataset.
+When a new data point comes in, it calculates the distance between that point and all
+training points, picks the K nearest ones, and averages their yield values as the prediction.
+
+### 2. Why Feature Scaling is Mandatory
+
+KNN relies on distance calculation. If Rainfall_mm ranges from 100-999 and
+Fertilizer_Used is just 0 or 1, rainfall will unfairly dominate the distance.
+StandardScaler brings all features to the same scale, making comparison fair.
+
+### 3. Overfitting vs Underfitting
+
+- K=1 → model memorizes every point → overfitting (RMSE: 0.87) ❌
+- K=15 → model generalizes well → best balance (RMSE: 0.606) ✅
+- K=50+ → too many neighbors → underfitting ❌
+
+### 4. Why We Sampled 10,000 Rows
+
+KNN calculates distance for every single row during prediction.
+On 1,000,000 rows this would take several minutes per prediction.
+10,000 rows gives us enough data while keeping it fast and practical.
+
+### 5. Choosing Best K
+
+We tested K=1 to K=20 and plotted RMSE for each.
+The graph showed RMSE flattening after K=15 — meaning more neighbors
+beyond 15 add no significant improvement.
