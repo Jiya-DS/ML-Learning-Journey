@@ -422,8 +422,8 @@ Predict crop yield (tons per hectare) based on environmental and agricultural fe
 
 ## 📈 Visuals
 
-![RMSE vs K value graph]("KNN/visuals/best_k_value.png")
-![Actual vs Predicted yield scatter plot]("KNN/visuals/actual_vs_predicted.png")
+![RMSE vs K value graph](KNN/visuals/best_k_value.png)
+![Actual vs Predicted yield scatter plot](KNN/visuals/actual_vs_predicted.png)
 
 ## 💡 Key Learnings
 
