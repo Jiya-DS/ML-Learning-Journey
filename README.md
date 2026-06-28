@@ -456,3 +456,64 @@ On 1,000,000 rows this would take several minutes per prediction.
 We tested K=1 to K=20 and plotted RMSE for each.
 The graph showed RMSE flattening after K=15 — meaning more neighbors
 beyond 15 add no significant improvement.
+
+# 07 — Feature Engineering
+
+## What is Feature Engineering?
+
+Feature engineering is the process of using domain knowledge to
+transform raw data into features that better represent the
+underlying problem to a machine learning model.
+
+Raw data alone is often not enough — feature engineering is the
+cooking process that makes ingredients more useful for the model.
+
+---
+
+## Techniques
+
+### 1. Creating New Features
+
+Combining existing columns to make something more meaningful.
+Example: `BMI = weight / height²`
+
+### 2. Encoding Categorical Variables
+
+Converting text categories into numbers.
+Example: `Male → 0, Female → 1`
+
+### 3. Handling Missing Values
+
+Filling nulls with mean, median, or mode.
+
+### 4. Feature Scaling / Normalization
+
+Bringing all features to a similar range.
+Example: StandardScaler, MinMaxScaler
+
+### 5. Extracting from Dates
+
+`date → day, month, year, weekday`
+
+### 6. Binning
+
+Converting continuous values into groups.
+Example: `age → young, middle-aged, senior`
+
+---
+
+## Real Examples from My Projects
+
+| Project             | Feature Engineering Done                              |
+| ------------------- | ----------------------------------------------------- |
+| Linear Regression   | Encoded True/False → 1/0, R² jumped from 0.57 → 0.916 |
+| KNN Crop Yield      | Label Encoding + StandardScaler applied               |
+| Logistic Regression | Used `drop()` to cleanly separate features            |
+
+---
+
+## Key Learnings
+
+- Choosing the right features matters more than the algorithm itself
+- Always encode categorical columns before feeding into a model
+- Always scale features before using distance-based algorithms like KNN

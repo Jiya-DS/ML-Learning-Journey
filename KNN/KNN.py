@@ -21,8 +21,6 @@ df = df.sample(n=10000, random_state=42)
 print("Sampled Shape:", df.shape)
 
 # Encode categorical columns
-
-
 le = LabelEncoder()
 for col in ["Region", "Soil_Type", "Crop", "Weather_Condition"]:
     df[col] = le.fit_transform(df[col])
@@ -53,8 +51,6 @@ X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
 print("\nScaling done! ✅")
-
-from sklearn.neighbors import KNeighborsRegressor
 
 # Train KNN model
 knn = KNeighborsRegressor(n_neighbors=5)
