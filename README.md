@@ -517,3 +517,60 @@ Example: `age → young, middle-aged, senior`
 - Choosing the right features matters more than the algorithm itself
 - Always encode categorical columns before feeding into a model
 - Always scale features before using distance-based algorithms like KNN
+
+# 08-Cross Validation — Students Performance Predictor
+
+## Concept
+
+Cross Validation is a model evaluation technique that splits the dataset
+into multiple folds (e.g., 5), training and testing the model multiple
+times — each time using a different fold as the test set. This avoids
+relying on a single "lucky" or "unlucky" train-test split and gives a
+more reliable measure of how well the model generalizes to unseen data.
+
+## Why Cross Validation?
+
+A single train-test split can be misleading — the test set might
+accidentally contain easier (or harder) data, making the model look
+better or worse than it really is. Cross Validation solves this by
+giving every data point a turn being tested, then averaging the results.
+
+## Dataset
+
+- **Source:** Students Performance in Exams (Kaggle)
+- **Rows:** 1000
+- **Target:** math score
+- **Features:** gender, race/ethnicity, parental level of education, lunch, test preparation course, reading score, writing score
+
+## Preprocessing
+
+- Checked for null values and explored data using `.describe()`, `.head()`, `.shape()`
+- Label Encoded 5 categorical columns using `LabelEncoder`:
+  gender, race/ethnicity, parental level of education, lunch, test preparation course
+
+## Model & Approach
+
+- **Algorithm:** Linear Regression
+- **Technique:** 5-Fold Cross Validation using `cross_val_score`
+
+## Results
+
+**R² scores across 5 folds:**
+`[0.8778, 0.8625, 0.8355, 0.8770, 0.8659]`
+
+**Average R² Score:** 0.8637
+
+## Key Observation
+
+- Scores stayed consistently between 0.835–0.878 across all 5 folds,
+  showing the model performs reliably across different subsets of data
+- This average (0.8637) is a more trustworthy performance measure than
+  a single train-test split R² score
+
+## Key Learnings
+
+- Cross Validation gives multiple performance estimates instead of one,
+  reducing the risk of a misleadingly "lucky" or "unlucky" split
+- For regression problems, `cross_val_score` defaults to R² as the
+  scoring metric
+- A small spread between fold scores indicates a stable, generalizable model
