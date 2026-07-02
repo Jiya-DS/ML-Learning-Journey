@@ -574,3 +574,107 @@ giving every data point a turn being tested, then averaging the results.
 - For regression problems, `cross_val_score` defaults to R² as the
   scoring metric
 - A small spread between fold scores indicates a stable, generalizable model
+
+# 09-Hyperparameter Tuning — GridSearchCV
+
+## Concept
+
+Hyperparameters are settings chosen **before** training a model
+(like `max_depth` or `min_samples_split`) — unlike parameters, which
+the model learns on its own from data. Since the best hyperparameter
+values depend on the specific dataset, they can't be calculated in
+advance — they must be found empirically by testing multiple candidates.
+
+`GridSearchCV` automates this by exhaustively testing every combination
+of hyperparameters supplied in a `param_grid`, using cross-validation
+to score each combination fairly, then reporting the best one.
+
+## Key Terms
+
+- **param_grid** — dictionary of hyperparameter names mapped to lists of candidate values
+- **GridSearchCV** — exhaustively tests every combination in `param_grid` using cross-validation
+- **best*params*** — the winning hyperparameter combination
+- **best*score*** — the average cross-validated score of the winning combination
+
+---
+
+## Part 1 — Heart Disease Dataset (Decision Tree Classifier)
+
+**Goal:** Tune `max_depth` and `min_samples_split` for a `DecisionTreeClassifier`.
+
+### ⚠️ Data Leakage Catch
+
+First run gave a suspiciously high score:
+
+| Model                              | Score             |
+| ---------------------------------- | ----------------- |
+| Untuned baseline (`max_depth=4`)   | 0.80 accuracy     |
+| GridSearchCV tuned (first attempt) | 0.998 accuracy ⚠️ |
+
+A jump to 99.8% was a red flag, so I checked for duplicate rows:
+
+\`\`\`python
+print(df.duplicated().sum())
+
+# Output: 723
+
+\`\`\`
+
+**723 out of 1025 rows were duplicates** — over 70% of the dataset. This
+caused data leakage: cross-validation folds had near-identical rows in
+both training and validation splits, inflating the score artificially.
+
+### Fix
+
+\`\`\`python
+df = df.drop_duplicates()
+
+# New shape: (302, 14)
+
+\`\`\`
+
+### Corrected, Legitimate Results
+
+| Model                                                   | Accuracy   |
+| ------------------------------------------------------- | ---------- |
+| Untuned baseline (`max_depth=4`)                        | 0.7377     |
+| GridSearchCV tuned (`max_depth=3, min_samples_split=2`) | **0.7946** |
+
+**Improvement:** ~5.7 percentage points — a real, trustworthy gain
+after removing leakage.
+
+---
+
+## Part 2 — Students Performance Dataset (Decision Tree Regressor)
+
+**Goal:** Tune `max_depth`, `min_samples_split`, and `min_samples_leaf`
+for a `DecisionTreeRegressor` predicting math score.
+
+### Duplicate Check
+
+\`\`\`python
+print(df.duplicated().sum())
+
+# Output: 0
+
+\`\`\`
+
+No duplicates — dataset confirmed clean, so results below are trustworthy.
+
+### Results
+
+| Model                                                                        | R² Score   |
+| ---------------------------------------------------------------------------- | ---------- |
+| Default (untuned) `DecisionTreeRegressor`                                    | 0.7027     |
+| GridSearchCV tuned (`max_depth=7, min_samples_leaf=2, min_samples_split=10`) | **0.8050** |
+
+**Improvement:** ~10 percentage points — a substantial, legitimate gain.
+
+---
+
+## Key Learnings
+
+- `GridSearchCV` exhaustively searches every combination in `param_grid`, scoring each with cross-validation
+- The `scoring` metric must match the problem type: `accuracy` for classification, `r2` for regression
+- **Data leakage from duplicate rows can badly inflate scores** — always check `df.duplicated().sum()` before trusting any cross-validated score
+- Tuning a shallower tree generalized better once the dataset shrank to unique rows — smaller datasets are more prone to overfitting with deeper trees

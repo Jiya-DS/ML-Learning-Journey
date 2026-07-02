@@ -1,6 +1,5 @@
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import cross_val_score
@@ -8,7 +7,7 @@ from sklearn.model_selection import cross_val_score
 
 # Load dataset
 df = pd.read_csv('StudentsPerformance.csv')
-
+print(df.duplicated().sum())
 # Label Encoding for categorical columns 
 le = LabelEncoder()
 categorical_cols = df.select_dtypes(include='object').columns
