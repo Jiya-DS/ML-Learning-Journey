@@ -678,3 +678,113 @@ No duplicates — dataset confirmed clean, so results below are trustworthy.
 - The `scoring` metric must match the problem type: `accuracy` for classification, `r2` for regression
 - **Data leakage from duplicate rows can badly inflate scores** — always check `df.duplicated().sum()` before trusting any cross-validated score
 - Tuning a shallower tree generalized better once the dataset shrank to unique rows — smaller datasets are more prone to overfitting with deeper trees
+
+# 10-XGBoost — Heart Disease Classification
+
+## Concept
+
+XGBoost (eXtreme Gradient Boosting) is a supervised ML algorithm that builds
+Decision Trees **sequentially** — each new tree corrects the errors (residuals)
+made by the previous trees. This is different from Random Forest, where all
+trees are built **independently** and combined through majority voting.
+
+## Key Terms
+
+- **Boosting** — building trees one after another, each fixing the previous tree's mistakes
+- **Residual** — the leftover error between actual and predicted values
+- **learning_rate** — controls how much each tree corrects the previous error (smaller = more careful learning)
+- **n_estimators** — number of trees built
+- **max_depth** — how deep each tree is allowed to grow
+
+## Dataset
+
+- Source: Kaggle Heart Disease Dataset
+- Rows: 1025, Columns: 14
+- Target: 1 = Disease, 0 = No Disease
+
+## Model Results
+
+### Baseline Model
+
+- Algorithm: `XGBClassifier` (`n_estimators=100, learning_rate=0.1, max_depth=3`)
+- Accuracy: **91.7%**
+
+### ⚠️ Data Leakage Catch
+
+The baseline score looked reasonable, but after tuning with `GridSearchCV`,
+accuracy jumped to a suspicious **98%+**. Checked for duplicates:
+
+```python
+print(df.duplicated().sum())
+# Output: 723
+```
+
+**723 out of 1025 rows were duplicates** — the same leakage issue found earlier
+in Section 09 on this exact dataset. Duplicate rows were leaking between
+`X_train` and `X_test`, letting the model "see" test data during training.
+
+### Fix
+
+```python
+df = df.drop_duplicates()
+```
+
+### Corrected, Legitimate Results
+
+| Model                            | Accuracy   |
+| -------------------------------- | ---------- |
+| Baseline (untuned, cleaned data) | 81.97%     |
+| GridSearchCV (cross-validated)   | 78.84%     |
+| Final test set (tuned model)     | **80.33%** |
+
+**Best params:** `learning_rate=0.2, max_depth=3, n_estimators=50`
+
+## Feature Importance
+
+| Feature  | Importance |
+| -------- | ---------- |
+| thal     | 0.254      |
+| cp       | 0.196      |
+| ca       | 0.084      |
+| oldpeak  | 0.081      |
+| slope    | 0.068      |
+| sex      | 0.056      |
+| restecg  | 0.052      |
+| exang    | 0.046      |
+| age      | 0.041      |
+| thalach  | 0.039      |
+| trestbps | 0.036      |
+| chol     | 0.029      |
+| fbs      | 0.019      |
+
+`thal` and `cp` together account for ~45% of the model's decisions, while
+commonly assumed "important" features like `chol` and `fbs` contribute very little.
+
+## Comparison
+
+| Model               | Accuracy |
+| ------------------- | -------- |
+| Logistic Regression | 79.5%    |
+| Decision Tree       | 80.0%    |
+| Random Forest       | 98.5%    |
+| XGBoost (corrected) | 80.33%   |
+
+## Key Observation
+
+- Random Forest's 98.5% (Section 05) was run **before** the duplicate issue
+  was ever caught — worth revisiting with the leakage lens applied
+- Once duplicates are removed, XGBoost performs comparably to Decision Tree,
+  showing that inflated scores aren't unique to any one algorithm — they come
+  from the data, not the model
+- A high score should always prompt a duplicate check before being trusted
+
+## Key Learnings
+
+- XGBoost's sequential, error-correcting approach (boosting) differs
+  fundamentally from Random Forest's independent tree averaging (bagging)
+- **Always check `df.duplicated().sum()` before trusting a high accuracy** —
+  this is the second time duplicates were caught on this exact dataset
+- Cross-validated accuracy and test set accuracy can differ slightly — both
+  should be reported, not just one
+- Feature importance adds interpretability — showing _which_ features drive
+  predictions, not just _how well_ the model performs
