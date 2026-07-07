@@ -7,7 +7,7 @@ from sklearn.model_selection import cross_val_score
 
 df = pd.read_csv("heart.csv")
 print(df.head())
-print(df.isnull().sum())
+df = df.drop_duplicates()
 
 X = df.drop("target", axis = 1)
 y = df["target"]
@@ -38,3 +38,20 @@ grid_search= GridSearchCV(
 grid_search.fit(X_train,y_train)
 print("Best params:", grid_search.best_params_)
 print("best R2:", grid_search.best_score_)
+
+best_model = grid_search.best_estimator_
+
+y_pred_tuned = best_model.predict(X_test)
+
+print("Tuned Test Accuracy:", accuracy_score(y_test, y_pred_tuned))
+print(classification_report(y_test, y_pred_tuned))
+
+importances = best_model.feature_importances_
+feature_names = X.columns
+
+importance_df = pd.DataFrame({
+    'feature': feature_names,
+    'importance': importances
+}).sort_values(by='importance', ascending=False)
+
+print(importance_df)
