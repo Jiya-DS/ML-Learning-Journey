@@ -4,14 +4,13 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import cross_val_score
 
-
 # Load dataset
 df = pd.read_csv('StudentsPerformance.csv')
 print(df.duplicated().sum())
 # Label Encoding for categorical columns 
 le = LabelEncoder()
 categorical_cols = df.select_dtypes(include='object').columns
-# Output: Index(['gender', 'race/ethnicity', ...], dtype='object'
+
 for col in categorical_cols:
     df[col] = le.fit_transform(df[col])
 
@@ -31,8 +30,6 @@ grid_search.fit(X, y)
 
 print("Best params:", grid_search.best_params_)
 print("Best R²:", grid_search.best_score_)
-
-
 
 default_tree = DecisionTreeRegressor(random_state=42)
 default_scores = cross_val_score(default_tree, X, y, cv=5, scoring='r2')
