@@ -788,3 +788,49 @@ commonly assumed "important" features like `chol` and `fbs` contribute very litt
   should be reported, not just one
 - Feature importance adds interpretability — showing _which_ features drive
   predictions, not just _how well_ the model performs
+
+# 11-K-Means Clustering — Customer Segmentation
+
+## Concept
+
+K-Means is an unsupervised algorithm that groups unlabeled data into K clusters based on similarity, by iteratively assigning points to the nearest centroid and updating centroid positions until stable.
+
+## Key Terms
+
+- **Centroid** — center point of a cluster
+- **WCSS** — Within-Cluster Sum of Squares; measures cluster tightness (`kmeans.inertia_`)
+- **Elbow Method** — plots WCSS vs K to find the optimal K
+- **K-Means++** — smarter centroid initialization for faster, reliable convergence
+- **Silhouette Score** — measures cluster separation (-1 to 1, higher is better)
+
+## Dataset
+
+- Source: Customer Churn Dataset
+- Rows: 300, Columns: 19 (`Churn`, `customerID` dropped before clustering)
+
+## Model Results
+
+| Feature Set             | K   | Silhouette Score |
+| ----------------------- | --- | ---------------- |
+| Full (one-hot + scaled) | 3   | 0.040            |
+| Full (one-hot + scaled) | 6   | 0.042            |
+| Numeric-only (scaled)   | 3   | **0.328**        |
+
+**Numeric-only clusters (tenure, MonthlyCharges, TotalCharges, SeniorCitizen):**
+
+| Cluster | Tenure | Charges  | Profile                 |
+| ------- | ------ | -------- | ----------------------- |
+| 0       | ~24 mo | Moderate | Newer, senior citizens  |
+| 1       | ~27 mo | Lowest   | Newer, non-senior       |
+| 2       | ~55 mo | Highest  | Long-tenure, high-value |
+
+## Visualization
+
+![Elbow Method](K-means_clustering/Elbow_Method.png)
+![Customer Clusters (K=3)](<K-means_clustering/Tenure_TotalCharges(k=3).png>)
+
+## Key Learnings
+
+- One-hot encoding a continuous column (like `tenure`) by mistake inflates dimensionality — always check which columns are truly categorical
+- High-dimensional categorical noise can dilute meaningful numeric signal — more features isn't always better for clustering
+- Elbow Method chooses K; Silhouette Score evaluates cluster quality — use both together

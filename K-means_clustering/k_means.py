@@ -28,6 +28,19 @@ scaler = StandardScaler()
 df_scaled = pd.DataFrame( scaler.fit_transform(df_encoded) , columns= df_encoded.columns)
 print(df_scaled.describe())
 
+# kmeans_3 = KMeans(n_clusters =3, init= "k-means++", random_state=42)
+# labels_3 = kmeans_3.fit_predict(df_scaled)
+
+# df['Cluster_3'] = labels_3
+# print(df.groupby('Cluster_3')[['tenure','MonthlyCharges','TotalCharges']].mean())
+# print("Silhouette Score (k=3):", silhouette_score(df_scaled, labels_3))
+
+# kmeans_6 = KMeans(n_clusters=6 , init = 'k-means++', random_state=42)
+# labels_6 = kmeans_6.fit_predict(df_scaled)
+# df['Cluster_6'] = labels_6
+# print(df.groupby('Cluster_6')[['tenure','MonthlyCharges','TotalCharges']].mean())
+# print("Silhouette Score (K=6):", silhouette_score(df_scaled, labels_6))
+
 #numerical column only
 numeric_cols = ['tenure','MonthlyCharges', 'TotalCharges','SeniorCitizen']
 df_numeric = df[numeric_cols]
@@ -70,15 +83,3 @@ plt.title("Elbow Method")
 plt.savefig("Elbow_Method.png")
 plt.show()
 
-# kmeans_3 = KMeans(n_clusters =3, init= "k-means++", random_state=42)
-# labels_3 = kmeans_3.fit_predict(df_scaled)
-
-# df['Cluster_3'] = labels_3
-# print(df.groupby('Cluster_3')[['tenure','MonthlyCharges','TotalCharges']].mean())
-# print("Silhouette Score (k=3):", silhouette_score(df_scaled, labels_3))
-
-# kmeans_6 = KMeans(n_clusters=6 , init = 'k-means++', random_state=42)
-# labels_6 = kmeans_6.fit_predict(df_scaled)
-# df['Cluster_6'] = labels_6
-# print(df.groupby('Cluster_6')[['tenure','MonthlyCharges','TotalCharges']].mean())
-# print("Silhouette Score (K=6):", silhouette_score(df_scaled, labels_6))
