@@ -32,9 +32,7 @@ print(df_scaled.describe())
 numeric_cols = ['tenure','MonthlyCharges', 'TotalCharges','SeniorCitizen']
 df_numeric = df[numeric_cols]
 
-# init="k-means++" is a smarter way to pick initial cluster centers
-# (spreads them out from each other) instead of placing them randomly,
-# which usually leads to faster, more reliable convergence
+
 scaler_numeric = StandardScaler()
 df_numeric_Scaled = pd.DataFrame(scaler_numeric.fit_transform(df_numeric), columns=numeric_cols)
 print(df_numeric_Scaled.describe())
@@ -56,6 +54,9 @@ plt.show()
 
 WCSS = []
 for i in range (1,11):
+    # init="k-means++" is a smarter way to pick initial cluster centers
+    # (spreads them out from each other) instead of placing them randomly,
+    # which usually leads to faster, more reliable convergence
     Kmeans = KMeans(n_clusters=i, init = "k-means++", random_state=42)
     Kmeans.fit(df_numeric_Scaled)
      # kmeans.inertia_ gives the WCSS (Within-Cluster Sum of Squares) for this K —
