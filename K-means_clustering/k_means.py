@@ -57,7 +57,7 @@ plt.show()
 WCSS = []
 for i in range (1,11):
     Kmeans = KMeans(n_clusters=i, init = "k-means++", random_state=42)
-    Kmeans.fit(df_scaled)
+    Kmeans.fit(df_numeric_Scaled)
      # kmeans.inertia_ gives the WCSS (Within-Cluster Sum of Squares) for this K —
     # a measure of how tightly packed the clusters are (lower = tighter clusters)
     WCSS.append(Kmeans.inertia_) 
