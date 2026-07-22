@@ -7,6 +7,7 @@ from sklearn.model_selection import cross_val_score
 # Load dataset
 df = pd.read_csv('StudentsPerformance.csv')
 print(df.duplicated().sum())
+
 # Label Encoding for categorical columns 
 le = LabelEncoder()
 categorical_cols = df.select_dtypes(include='object').columns

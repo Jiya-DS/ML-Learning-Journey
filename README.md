@@ -834,3 +834,95 @@ K-Means is an unsupervised algorithm that groups unlabeled data into K clusters 
 - One-hot encoding a continuous column (like `tenure`) by mistake inflates dimensionality — always check which columns are truly categorical
 - High-dimensional categorical noise can dilute meaningful numeric signal — more features isn't always better for clustering
 - Elbow Method chooses K; Silhouette Score evaluates cluster quality — use both together
+
+# 12-PCA — Customer Segmentation (Dimensionality Reduction)
+
+## Concept
+
+PCA (Principal Component Analysis) is an unsupervised technique that reduces
+the number of features in a dataset while preserving as much variance
+(information) as possible. It transforms correlated features into a smaller
+set of uncorrelated "principal components," ranked by how much variance
+each one explains.
+
+## Why PCA Before K-Means?
+
+After one-hot encoding, the customer dataset had 30 features — many of them
+sparse and correlated (e.g. multiple columns from the same categorical
+variable). High-dimensional, noisy feature spaces make distance-based
+clustering less meaningful. PCA compresses this into a smaller set of
+dense, informative components before clustering.
+
+## Key Terms
+
+- **Principal Component** — a new axis capturing the most variance in the data, ranked by importance
+- **Explained Variance Ratio** — how much of the total variance each component accounts for
+- **Cumulative Explained Variance** — running total of variance explained as more components are added
+- **n_components** — how many components to keep
+
+## Dataset
+
+- Source: Customer Churn Dataset
+- Rows: 300, Columns after one-hot encoding: 30 (`customerID`, `Churn` dropped)
+- Scaling: `StandardScaler` applied before PCA (required, since PCA is scale-sensitive)
+
+## Choosing n_components
+
+Fit PCA with all 30 components first to inspect variance explained:
+
+- No single component dominates — the first explains only ~7.9% of variance,
+  reflecting how spread out the signal is across many one-hot columns
+- Cumulative variance crosses 60% around 10 components, and reaches 100% at
+  all 30 (as expected)
+- Chose **n_components=10** for clustering — a practical trade-off that
+  keeps ~56% of variance while cutting dimensionality by two-thirds
+
+## Model Results
+
+**K-Means on 10 PCA components:**
+
+| K   | Silhouette Score |
+| --- | ---------------- |
+| 2   | 0.0926           |
+| 3   | 0.0855           |
+| 4   | 0.0817           |
+| 5   | 0.0796           |
+
+K=2 gave the highest silhouette score, though all scores are low overall —
+weaker separation than the numeric-only clustering from Section 11
+(0.328), suggesting the reduced categorical signal still adds more noise
+than structure for this dataset.
+
+**Cluster profile (K=3, kept for comparison with Section 11):**
+
+| Cluster | Tenure | Monthly Charges | Total Charges | Size |
+| ------- | ------ | --------------- | ------------- | ---- |
+| 0       | ~26 mo | $56.75          | $1,386.53     | 113  |
+| 1       | ~55 mo | $83.67          | $4,525.44     | 98   |
+| 2       | ~27 mo | $62.43          | $1,609.23     | 89   |
+
+## Key Observation
+
+- Cluster 1 stands out clearly: long-tenure, high-paying customers with the
+  highest total charges — consistent with the "long-tenure, high-value"
+  cluster found in Section 11's numeric-only approach
+- Despite that, silhouette scores here (~0.08–0.09) are much weaker than
+  Section 11's numeric-only result (0.328) — PCA on the full one-hot set
+  still carries diluted categorical noise, even after dimensionality
+  reduction
+- Low, flat silhouette scores across K=2 to K=5 suggest the clusters
+  aren't strongly separated regardless of K — more a smooth gradient than
+  distinct groups
+
+## Key Learnings
+
+- PCA needs `StandardScaler` first, same requirement as K-Means and KNN —
+  any distance/variance-based method needs comparable feature scales
+- Explained variance ratio drops off gradually here (no sharp "elbow"),
+  meaning no small handful of components dominates — a sign the underlying
+  signal is spread thinly across many categorical dummy columns
+- Reducing dimensions doesn't guarantee better clustering — Section 11's
+  simpler numeric-only approach still outperformed this PCA + full-feature
+  approach on silhouette score
+- Always compare against a simpler baseline (like Section 11) before
+  assuming a more complex pipeline (PCA + full features) is actually better
